@@ -27,7 +27,7 @@ export class UserService {
   findOne(id: string) {
     const user = db.users.find((el) => el.id === id);
     if (!user) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    return new UserEntity({ ...user });
+    return user;
   }
 
   update(id: string, updateUserDto: UpdateUserDto) {
@@ -38,7 +38,7 @@ export class UserService {
     }
     user.password = updateUserDto.newPassword;
     user.updatedAt = Date.now();
-    user.version = user.version++;
+    user.version += 1;
     return user;
   }
 
