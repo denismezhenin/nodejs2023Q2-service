@@ -42,6 +42,17 @@ export class ArtistService {
     if (!artist)
       throw new HttpException('artist not found', HttpStatus.NOT_FOUND);
     db.artists = db.artists.filter((el) => el.id !== artist.id);
+    db.tracks.forEach((el, index) => {
+      if (el.artistId === artist.id) {
+        db.tracks[index].artistId = null;
+      }
+    });
+    db.albums.forEach((el, index) => {
+      if (el.artistId === artist.id) {
+        db.albums[index].artistId = null;
+      }
+    });
+
     return;
   }
 }
