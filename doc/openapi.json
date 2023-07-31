@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "Home Library Service",
+    "title": "Home Library",
     "description": "Home music library service",
     "version": "1.0.0"
   },
