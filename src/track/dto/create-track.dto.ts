@@ -14,21 +14,21 @@ export class CreateTrackDto {
   @IsOptional()
   @IsString()
   @ValidateIf((object, value) => value !== null)
-  artistId: string | null; // refers to Artist
+  artistId: string | null;
 
   @IsOptional()
   @IsString()
   @ValidateIf((object, value) => value !== null)
-  albumId: string | null; // refers to Album
+  albumId: string | null;
 
   @IsNumber()
-  duration: number; // integer number
+  duration: number;
 }
 
 export interface Track {
-  id: string; // uuid v4
+  id: string;
   name: string;
-  artistId: string | null; // refers to Artist
-  albumId: string | null; // refers to Album
-  duration: number; // integer number
+  artistId: string | null;
+  albumId: string | null;
+  duration: number;
 }

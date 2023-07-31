@@ -11,7 +11,7 @@ export class CreateArtistDto {
 }
 
 export interface Artist {
-  id: string; // uuid v4
+  id: string;
   name: string;
   grammy: boolean;
 }
