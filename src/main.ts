@@ -1,20 +1,23 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
-import * as YAML from 'yamljs';
-import * as path from 'path';
+import { ConfigService } from '@nestjs/config';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { load } from 'js-yaml';
 import { readFile } from 'fs/promises';
-import { SwaggerModule } from '@nestjs/swagger';
-
-const port = process.env.PORT || 3000;
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(new ValidationPipe());
-  const apiSpecPath = path.join('doc', 'api.yaml');
-  const apiSpec = YAML.load(apiSpecPath);
-  // const document = SwaggerModule.createDocument(app, apiSpec);
-  SwaggerModule.setup('doc', app, apiSpec);
-  await app.listen(3000);
+  const appConfig = app.get<ConfigService>(ConfigService);
+  const port = appConfig.get('PORT');
+  const file = await readFile('doc/api.yaml', 'utf8');
+  const yamlDoc = load(file);
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+    }),
+  );
+  SwaggerModule.setup('api', app, yamlDoc);
+  await app.listen(port || 4000);
 }
 bootstrap();
