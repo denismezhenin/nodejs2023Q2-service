@@ -32,14 +32,6 @@ export class TrackService {
   }
 
   async update(id: string, updateTrackDto: UpdateTrackDto) {
-    // const trackIndex = db.tracks.findIndex((el) => el.id === id);
-    // if (trackIndex === -1)
-    //   throw new HttpException('track not found', HttpStatus.NOT_FOUND);
-    // db.tracks[trackIndex] = {
-    //   ...db.tracks[trackIndex],
-    //   ...updateTrackDto,
-    // };
-    // return db.tracks[trackIndex];
     const update = await this.trackRepository.update(id, updateTrackDto);
     if (!update.affected)
       throw new HttpException('track not found', HttpStatus.NOT_FOUND);
@@ -48,11 +40,6 @@ export class TrackService {
   }
 
   async remove(id: string) {
-    // const track = db.tracks.find((el) => el.id === id);
-    // if (!track)
-    //   throw new HttpException('track not found', HttpStatus.NOT_FOUND);
-    // db.tracks = db.tracks.filter((el) => el.id !== track.id);
-    // return;
     const track = await this.trackRepository.delete(id);
     if (!track.affected)
       throw new HttpException('track not found', HttpStatus.NOT_FOUND);
