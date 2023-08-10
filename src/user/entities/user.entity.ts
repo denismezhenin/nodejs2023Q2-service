@@ -1,16 +1,42 @@
-import { Exclude } from "class-transformer";
+import { Exclude } from 'class-transformer';
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
+@Entity()
 export class UserEntity {
-  id: string; // uuid v4
-  login: string;
-  version: number; // integer number, increments on update
-  createdAt: number; // timestamp of creation
-  updatedAt: number; // timestamp of last update
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
+  @Column()
+  login: string;
+
+  @Column({ default: 1 })
+  version: number;
+
+  @Column({ type: 'bigint', nullable: true })
+  createdAt: number;
+
+  @Column({ type: 'bigint', nullable: true })
+  updatedAt: number;
+
+  @Column()
   @Exclude()
   password: string;
 
-  constructor(partial: Partial<UserEntity>) {
-    Object.assign(this, partial);
+  @BeforeInsert()
+  setDate() {
+    this.createdAt = Number(Date.now());
+    this.updatedAt = Date.now();
+  }
+  @BeforeUpdate()
+  updateValue() {
+    this.version += 1;
+    this.updatedAt = Date.now();
+    this.createdAt = Number(this.createdAt);
   }
 }

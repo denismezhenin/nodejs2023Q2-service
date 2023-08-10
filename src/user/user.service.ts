@@ -1,51 +1,48 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateUserDto, IUser } from './dto/create-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { db } from 'src/db/db';
-import { randomUUID } from 'crypto';
+import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class UserService {
-  // constructor(private readonly db: db) {}
-  create(createUserDto: CreateUserDto) {
-    const newUser: IUser = {
-      ...createUserDto,
-      id: randomUUID(),
-      version: 1,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
-    };
-    db.users.push(newUser);
+  constructor(
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
+  ) {}
+  async create(userData: CreateUserDto) {
+    const newUser = await this.userRepository.create(userData);
+    await this.userRepository.save(newUser);
     return newUser;
   }
 
   findAll() {
-    return db.users;
+    return this.userRepository.find();
   }
 
-  findOne(id: string) {
-    const user = db.users.find((el) => el.id === id);
+  async findOne(id: string) {
+    const user = await this.userRepository.findOneBy({ id });
     if (!user) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     return user;
   }
 
-  update(id: string, updateUserDto: UpdateUserDto) {
-    const user = db.users.find((el) => el.id === id);
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const user = await this.userRepository.findOneBy({ id });
     if (!user) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     if (user.password !== updateUserDto.oldPassword) {
       throw new HttpException('Wrong passport', HttpStatus.FORBIDDEN);
     }
     user.password = updateUserDto.newPassword;
-    user.updatedAt = Date.now();
-    user.version += 1;
+    await this.userRepository.update(id, user);
     return user;
   }
 
-  remove(id: string) {
-    const user = db.users.find((el) => el.id === id);
-    if (!user) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    db.users = db.users.filter((el) => el.id !== user.id);
+  async remove(id: string) {
+    const deletedUser = await this.userRepository.delete(id);
+    if (!deletedUser.affected) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
     return;
   }
 }

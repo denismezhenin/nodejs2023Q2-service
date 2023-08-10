@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   ParseUUIDPipe,
@@ -15,7 +14,6 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserEntity } from './entities/user.entity';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('user')
@@ -24,33 +22,34 @@ export class UserController {
 
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
-    return new UserEntity({ ...this.userService.create(createUserDto) });
+    const user = await this.userService.create(createUserDto);
+    return user;
   }
 
   @Get()
-  findAll() {
-    const users = this.userService.findAll();
-    const res = users.map((el) => new UserEntity({ ...el }));
-    // return res;
-    return this.userService.findAll();
+  async findAll() {
+    const users = await this.userService.findAll();
+    return users;
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string): UserEntity {
-    return new UserEntity({ ...this.userService.findOne(id) });
+  async findOne(@Param('id', ParseUUIDPipe) id: string) {
+    const user = await this.userService.findOne(id);
+    return user;
   }
 
   @Put(':id')
-  update(
+  async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateUserDto: UpdateUserDto,
-  ): UserEntity {
-    return new UserEntity({ ...this.userService.update(id, updateUserDto) });
+  ) {
+    const user = await this.userService.update(id, updateUserDto);
+    return user;
   }
 
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id', ParseUUIDPipe) id: string) {
-    return this.userService.remove(id);
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.userService.remove(id);
   }
 }
