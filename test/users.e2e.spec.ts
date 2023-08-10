@@ -172,7 +172,7 @@ describe('Users (e2e)', () => {
         createdAt,
         updatedAt,
       } = updateResponse.body;
-      console.log(updateResponse.body)
+
       expect(login).toBe(createUserDto.login);
       expect(updateResponse.body).not.toHaveProperty('password');
       expect(validate(updatedId)).toBe(true);

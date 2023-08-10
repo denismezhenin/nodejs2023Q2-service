@@ -8,7 +8,7 @@ import { AlbumModule } from './album/album.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserEntity } from './user/entities/user.entity';
+// import { UserEntity } from './user/entities/user.entity';
 
 @Module({
   imports: [
@@ -30,7 +30,8 @@ import { UserEntity } from './user/entities/user.entity';
         password: ConfigService.get('POSTGRES_PASSWORD'),
         database: ConfigService.get('POSTGRES_DB'),
         // entities: [__dirname + '/**/*.entity{.js .ts}'],
-        entities: [UserEntity],
+        // entities: [UserEntity],
+        autoLoadEntities: true,
         synchronize: true,
       }),
       inject: [ConfigService],

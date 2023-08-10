@@ -1,58 +1,46 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { randomUUID } from 'crypto';
-import { db } from 'src/db/db';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
+import { Artist } from './entities/artist.entity';
 
 @Injectable()
 export class ArtistService {
-  create(createArtistDto: CreateArtistDto) {
-    const newArtist = {
-      ...createArtistDto,
-      id: randomUUID(),
-    };
-    db.artists.push(newArtist);
+  constructor(
+    @InjectRepository(Artist)
+    private artistRepository: Repository<Artist>,
+  ) {}
+
+  async create(createArtistDto: CreateArtistDto) {
+    const newArtist = await this.artistRepository.create(createArtistDto);
+    await this.artistRepository.save(newArtist);
     return newArtist;
   }
 
-  findAll() {
-    return db.artists;
+  async findAll() {
+    return this.artistRepository.find();
   }
 
-  findOne(id: string) {
-    const artist = db.artists.find((el) => el.id === id);
+  async findOne(id: string) {
+    const artist = await this.artistRepository.findOneBy({ id });
     if (!artist)
       throw new HttpException('Artist not found', HttpStatus.NOT_FOUND);
     return artist;
   }
 
-  update(id: string, UpdateArtistDto: UpdateArtistDto) {
-    const artistIndex = db.artists.findIndex((el) => el.id === id);
-    if (artistIndex === -1)
+  async update(id: string, UpdateArtistDto: UpdateArtistDto) {
+    const update = await this.artistRepository.update(id, UpdateArtistDto);
+    if (!update.affected)
       throw new HttpException('artist not found', HttpStatus.NOT_FOUND);
-    db.artists[artistIndex] = {
-      ...db.artists[artistIndex],
-      ...UpdateArtistDto,
-    };
-    return db.artists[artistIndex];
+    const artist = await this.artistRepository.findOneBy({ id });
+    return artist;
   }
 
-  remove(id: string) {
-    const artist = db.artists.find((el) => el.id === id);
-    if (!artist)
+  async remove(id: string) {
+    const artist = await this.artistRepository.delete(id);
+    if (!artist.affected)
       throw new HttpException('artist not found', HttpStatus.NOT_FOUND);
-    db.artists = db.artists.filter((el) => el.id !== artist.id);
-    db.tracks.forEach((el, index) => {
-      if (el.artistId === artist.id) {
-        db.tracks[index].artistId = null;
-      }
-    });
-    db.albums.forEach((el, index) => {
-      if (el.artistId === artist.id) {
-        db.albums[index].artistId = null;
-      }
-    });
-
     return;
   }
 }
