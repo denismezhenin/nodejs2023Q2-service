@@ -1,6 +1,6 @@
 import { Album } from 'src/album/dto/create-album.dto';
 import { Artist } from 'src/artist/dto/create-artist.dto';
-import { Track } from 'src/track/dto/create-track.dto';
+import { ITrack } from 'src/track/dto/create-track.dto';
 import { IUser } from 'src/user/dto/create-user.dto';
 
 export const db: db = {
@@ -18,7 +18,7 @@ export const db: db = {
 export interface db {
   users: IUser[];
   artists: Artist[];
-  tracks: Track[];
+  tracks: ITrack[];
   albums: Album[];
   favorites: {
     artists: string[];

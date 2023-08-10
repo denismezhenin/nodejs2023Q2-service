@@ -25,7 +25,7 @@ export class CreateTrackDto {
   duration: number;
 }
 
-export interface Track {
+export interface ITrack {
   id: string;
   name: string;
   artistId: string | null;
