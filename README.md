@@ -17,6 +17,12 @@ git clone https://github.com/denismezhenin/nodejs2023Q2-service.git
 npm install
 ```
 
+### Create Env
+
+```
+cp .env.example .env
+```
+
 ## Running application
 
 ```
