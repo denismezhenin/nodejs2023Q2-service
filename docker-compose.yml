@@ -1,0 +1,35 @@
+version: "3.5"
+services:
+  postgres:
+    build: ./database
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - postgres_logs:/var/log/postgresql
+    networks:
+      - home-library-service
+
+  app:
+    build: .
+    ports:
+      - "${PORT}:${PORT}"
+    depends_on:
+      - postgres
+    volumes:
+      - ./src:/app/src
+    networks:
+      - home-library-service
+
+networks:
+  home-library-service:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  postgres_logs:

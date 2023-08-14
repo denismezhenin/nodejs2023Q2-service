@@ -25,12 +25,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       imports: [ConfigModule],
       useFactory: (ConfigService: ConfigService) => ({
         type: 'postgres',
+        host: ConfigService.get('POSTGRES_HOST'),
         port: ConfigService.get('POSTGRES_PORT'),
         username: ConfigService.get('POSTGRES_USER'),
         password: ConfigService.get('POSTGRES_PASSWORD'),
         database: ConfigService.get('POSTGRES_DB'),
-        // entities: [__dirname + '/**/*.entity{.js .ts}'],
-        // entities: [UserEntity],
         autoLoadEntities: true,
         synchronize: true,
       }),
