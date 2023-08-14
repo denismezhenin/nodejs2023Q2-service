@@ -5,15 +5,12 @@ import { SwaggerModule } from '@nestjs/swagger';
 import * as yaml from 'js-yaml';
 import { readFile } from 'fs/promises';
 import { ValidationPipe } from '@nestjs/common';
-import YAML from 'yamljs';
-import { readFileSync } from 'fs';
-
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const appConfig = app.get<ConfigService>(ConfigService);
   const port = appConfig.get('PORT');
-  const file = await readFileSync('doc/api.yaml', 'utf8');
+  const file = await readFile('doc/api.yaml', 'utf8');
   const yamlDoc = yaml.load(file);
   app.useGlobalPipes(
     new ValidationPipe({

@@ -8,13 +8,19 @@
 ## Downloading
 
 ```
-git clone {repository URL}
+git clone https://github.com/denismezhenin/nodejs2023Q2-service.git
 ```
 
 ## Installing NPM modules
 
 ```
 npm install
+```
+
+### Create Env
+
+```
+cp .env.example .env
 ```
 
 ## Running application
@@ -26,6 +32,35 @@ npm start
 After starting the app on port (4000 as default) you can open
 in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
 For more information about OpenAPI/Swagger please visit https://swagger.io/.
+
+## Docker
+
+```
+docker compose up
+```
+
+## Scan vulnerability
+
+```
+docker scout cves nodejs2023q2-service-app:latest
+```
+
+```
+docker scout recommendations nodejs2023q2-service-app:latest
+```
+
+## Migrations 
+
+Create
+
+```
+npm run migration:create
+```
+
+Run
+```
+npm run migration:run
+```
 
 ## Testing
 
