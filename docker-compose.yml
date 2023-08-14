@@ -17,6 +17,7 @@ services:
 
   app:
     build: .
+    restart: on-failure
     ports:
       - "${PORT}:${PORT}"
     depends_on:
