@@ -11,6 +11,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { MyLogger } from './logging/logger.module';
 import { LoggerMiddleware } from './logging/logger.middleware';
 // import { UserEntity } from './user/entities/user.entity';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { LoggerMiddleware } from './logging/logger.middleware';
       }),
       inject: [ConfigService],
     }),
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
@@ -47,3 +49,4 @@ export class AppModule implements NestModule {
     consumer.apply(LoggerMiddleware).exclude('/api').forRoutes('*');
   }
 }
+// export class AppModule {}

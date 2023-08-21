@@ -28,6 +28,9 @@ export class UserEntity {
   @Exclude()
   password: string;
 
+  @Column({ nullable: true })
+  refreshToken: string;
+
   @BeforeInsert()
   setDate() {
     this.createdAt = Number(Date.now());
