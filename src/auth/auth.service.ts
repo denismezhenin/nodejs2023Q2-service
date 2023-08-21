@@ -1,4 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/entities/user.entity';
@@ -6,6 +12,7 @@ import { UserEntity } from 'src/user/entities/user.entity';
 import { EntityManager, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
+import { RefreshDto } from './dto/refreshAuth.dto';
 
 @Injectable()
 export class AuthService {
@@ -23,6 +30,28 @@ export class AuthService {
     const passwordValid = await bcrypt.compare(pass, user.password);
     if (!passwordValid)
       throw new HttpException('Wrong password', HttpStatus.FORBIDDEN);
+    return await this.createResponse(user.id, user.login);
+  }
+
+  async refreshToken(refreshDto: RefreshDto) {
+    if (!refreshDto.token) {
+      throw new UnauthorizedException();
+    }
+    let payload: any;
+    try {
+      payload = await this.jwtService.verifyAsync(refreshDto.token, {
+        secret: this.configService.get('JWT_SECRET_KEY'),
+      });
+    } catch {
+      throw new ForbiddenException();
+    }
+    const user = await this.userRepository.findOneBy({
+      id: payload.userId,
+    });
+
+    if (!user) {
+      throw new ForbiddenException();
+    }
     return await this.createResponse(user.id, user.login);
   }
 

@@ -40,10 +40,17 @@ export class UserService {
   async update(id: string, updateUserDto: UpdateUserDto) {
     const user = await this.userRepository.findOneBy({ id });
     if (!user) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    if (user.password !== updateUserDto.oldPassword) {
-      throw new HttpException('Wrong passport', HttpStatus.FORBIDDEN);
-    }
-    user.password = updateUserDto.newPassword;
+    const passwordValid = await bcrypt.compare(
+      updateUserDto.oldPassword,
+      user.password,
+    );
+    if (!passwordValid)
+      throw new HttpException('Wrong password', HttpStatus.FORBIDDEN);
+    const hashedPassword = await bcrypt.hash(
+      updateUserDto.newPassword,
+      +this.configService.get('CRYPT_SALT'),
+    );
+    user.password = hashedPassword;
     await this.userRepository.update(id, user);
     return user;
   }

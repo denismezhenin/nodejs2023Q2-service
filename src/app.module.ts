@@ -49,4 +49,3 @@ export class AppModule implements NestModule {
     consumer.apply(LoggerMiddleware).exclude('/api').forRoutes('*');
   }
 }
-// export class AppModule {}
