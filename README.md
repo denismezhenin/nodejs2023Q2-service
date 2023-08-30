@@ -1,5 +1,26 @@
 # Home Library Service
 
+Resuful API Music home library with authorization
+
+## Features
+
+- Rest Api
+- Custom logger
+- Authorization
+- Database volumes and logs
+- Docker container hot reload
+- Typeorm for postgres
+- Request validataion
+
+## Tech stack
+
+- Node.js
+- Nest.js
+- JWT
+- Docker
+- Postgres
+- Typeorm
+
 ## Prerequisites
 
 - Git - [Download & Install Git](https://git-scm.com/downloads).
@@ -65,18 +86,6 @@ npm run migration:run
 ## Testing
 
 After application running open new terminal and enter:
-
-To run all tests without authorization
-
-```
-npm run test
-```
-
-To run only one of all test suites
-
-```
-npm run test -- <path to suite>
-```
 
 To run all test with authorization
 
